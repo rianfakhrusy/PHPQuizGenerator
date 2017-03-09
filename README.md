@@ -1,1 +1,1 @@
-Quiz Generator using Genetic Algorithm in Java
+Quiz Generator using Genetic Algorithm in PHP
