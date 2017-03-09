@@ -39,7 +39,8 @@ namespace GAQuizGenerator;
  * @author Rian Fakhrusy
  */
 
-ini_set('max_execution_time', 300);
+ini_set('max_execution_time', 300); //5 minutes php run timeout
+
 class Population {
     
     private $tournamentSize = 3;
@@ -52,8 +53,6 @@ class Population {
 
     public $maxSize;
     public $currentSize;
-    #public $targetGene = 'Hello, World!';
-
 
     public function __construct($size = 1024, $crossover = .8, $elitism=0.1, $mutation=0.03)
     {
@@ -69,7 +68,7 @@ class Population {
     }
 
     /*
-     * Sort the population by fitness, bigest first
+     * Sort the population by fitness, biggest value first, descending
      */
     private function sortPopulation(){
         rsort($this->population);
@@ -136,6 +135,5 @@ class Population {
         $this->population;
         $this->sortPopulation();
     }
-
-
+    
 }

@@ -2,19 +2,19 @@
 namespace GAQuizGenerator;
 
 /**
- * Question class
+ * Class to store question attributes
  *
  * @author Rian Fakhrusy
  */
 
 class Question {
     private $id;
-    private $score; //a1
+    private $score;
     private $type;
-    private $difficulty; //a2
-    private $knowledgePoint; //a4
-    private $distinguishingDegree; //a5
-    private $solutionTime; //a7
+    private $difficulty; 
+    private $chapterCovered; 
+    private $distinguishingDegree; 
+    private $solutionTime; 
 
 
 	/**
@@ -23,18 +23,18 @@ class Question {
 	 * @param    $score   
 	 * @param    $type   
 	 * @param    $difficulty   
-	 * @param    $knowledgePoint   
+	 * @param    $chapterCovered   
 	 * @param    $distinguishingDegree   
 	 * @param    $solutionTime   
 	 * @param    $abilityLevel   
 	 */
-	public function __construct($id, $score, $type, $difficulty, $knowledgePoint, $distinguishingDegree, $solutionTime)
+	public function __construct($id, $score, $type, $difficulty, $chapterCovered, $distinguishingDegree, $solutionTime)
 	{
 		$this->id = $id;
 		$this->score = $score;
 		$this->type = $type;
 		$this->difficulty = $difficulty;
-		$this->knowledgePoint = $knowledgePoint;
+		$this->chapterCovered = $chapterCovered;
 		$this->distinguishingDegree = $distinguishingDegree;
 		$this->solutionTime = $solutionTime;
 	}
@@ -136,25 +136,25 @@ class Question {
     }
 
     /**
-     * Gets the value of knowledgePoint.
+     * Gets the value of chapterCovered.
      *
      * @return mixed
      */
-    public function getKnowledgePoint()
+    public function getChapterCovered()
     {
-        return $this->knowledgePoint;
+        return $this->chapterCovered;
     }
 
     /**
-     * Sets the value of knowledgePoint.
+     * Sets the value of chapterCovered.
      *
-     * @param mixed $knowledgePoint the knowledge point
+     * @param mixed $chapterCovered the knowledge point
      *
      * @return self
      */
-    private function _setKnowledgePoint($knowledgePoint)
+    private function _setChapterCovered($chapterCovered)
     {
-        $this->knowledgePoint = $knowledgePoint;
+        $this->chapterCovered = $chapterCovered;
 
         return $this;
     }
@@ -206,4 +206,5 @@ class Question {
 
         return $this;
     }
+    
 }

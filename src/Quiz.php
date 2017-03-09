@@ -2,7 +2,7 @@
 namespace GAQuizGenerator;
 
 /**
- * Question class
+ * Class to store critical information about a quiz that is useful in genetic algorithm process.
  *
  * @author Rian Fakhrusy
  */
@@ -15,7 +15,7 @@ class Quiz {
     public static $chapters = [];
     public static $avgDist;
     public static $sumTime;
-    public static $quest = [];
+    public static $question = [];
 
     public function load($filename){
     	$handle = fopen($filename, "r");
@@ -28,7 +28,7 @@ class Quiz {
 			$a = explode(' ', $S);
 			#var_dump($a);
 
-			self::$quest[] = new Question(
+			self::$question[] = new Question(
 				array_shift($a),
 				array_shift($a),
 				array_shift($a),

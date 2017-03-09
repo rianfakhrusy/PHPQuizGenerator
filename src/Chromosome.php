@@ -25,7 +25,7 @@
 namespace GAQuizGenerator;
 
 /**
- * A php script that demonstrates a simple "Hello, world!" application using
+ * A php script that auto-generate a quiz from question bank using
  * genetic algorithms.
  * Extended from Carlos André Ferrari's code.
  *
@@ -35,8 +35,6 @@ class Chromosome {
 
     public $fitness;
     public $gene = [];
-    #public $population;
-    public static $targetGene = "Hello, World!";
 
     /*
      * This class is used to define a chromosome for the gentic algorithm
@@ -63,22 +61,23 @@ class Chromosome {
      */
     public function mate(Chromosome $mate)
     {
-        // Convert the genes to arrays to make thing easier.
+        #Convert the genes to arrays to make things easier.
         $arr1  = $this->gene;
         $arr2  = $mate->gene;
 
-        // Select a random pivot point for the mating
-        $pivot = rand(0, count($this->gene)-2);
-
+        #Store array size in variable to make things easier.
         $length = count($mate->gene);
 
-        // Copy the data from each gene to the first child.
+        #Select a random pivot point for the mating
+        $pivot = rand(0, count($this->gene)-2);
+
+        #Copy the data from each gene to the first child.
         $child1 = array_merge(
             array_slice($arr1,0,$pivot), 
             array_slice($arr2,-$length+$pivot)
         );
 
-        // Repeat for the second child, but in reverse order.
+        #Repeat for the second child, but in reverse order.
         $child2 = array_merge(
             array_slice($arr2,0,$pivot), 
             array_slice($arr1,-$length+$pivot)
@@ -97,11 +96,14 @@ class Chromosome {
      */
     public function mutate()
     {
-        $quizIds = array_map(function($o) { return $o->getId(); }, Quiz::$quest); #get array of all question id
+        #get array of all question in question bank id
+        $quizIds = array_map(function($o) { return $o->getId(); }, Quiz::$question); 
+
         $gene = $this->gene;
         $unusedGene = array_diff($quizIds, $gene); #get all question id that has not been in the quiz
+        #remember that a quiz can not contain 2 of the same question
 
-        #replace a random gene with a random new question
+        #replace a random gene with a random new question that is represented by a gene
         shuffle($unusedGene);
         $gene{rand(0, count($gene)-1)} = $unusedGene[0];
 
@@ -114,6 +116,7 @@ class Chromosome {
      */
     public function calculateFitness($gene)
     {
+        #temporary variables for storing new quiz attributes
         $tempScore = 0;
         $tempTypes = [];
         $tempDiff = 0;
@@ -121,48 +124,35 @@ class Chromosome {
         $tempDist = 0;
         $tempTime = 0;
 
-        #var_dump(Quiz::$quest);
-        #var_dump($gene);
-
+        #compute the value of all new quiz attributes
         foreach($gene as $key => $value)
         {
-            $tempScore += Quiz::$quest[$value-1]->getScore();
-            $tempDiff += Quiz::$quest[$value-1]->getDifficulty();
-            $tempDist += Quiz::$quest[$value-1]->getDistinguishingDegree();
-            $tempTime += Quiz::$quest[$value-1]->getSolutionTime();
+            $tempScore += Quiz::$question[$value-1]->getScore(); #sum of new quiz score value
+            $tempDiff += Quiz::$question[$value-1]->getDifficulty();
+            $tempDist += Quiz::$question[$value-1]->getDistinguishingDegree();
+            $tempTime += Quiz::$question[$value-1]->getSolutionTime(); #sum of new quiz time value
 
-            $s = Quiz::$quest[$value-1]->getType();
-            #print($s);
+            #count the value of all question types in a quiz
+            $s = Quiz::$question[$value-1]->getType();
             if (array_key_exists($s, $tempTypes)){
                 $tempTypes[$s] += 1;
             } else {
                 $tempTypes[$s] = 1;
             }
 
-            $ss = Quiz::$quest[$value-1]->getKnowledgePoint();
+            #count the value of all chapter covered in a quiz
+            $ss = Quiz::$question[$value-1]->getChapterCovered();
             if (array_key_exists($ss, $tempChapters)){
                 $tempChapters[$ss] += 1;
             } else {
                 $tempChapters[$ss] = 1;
             }
-
         }
-/*
-        for ($i = 0; $i <= count($gene); $i++)
-        {
-            $temp = Quiz::$quest;
-            $temp15 = $gene[(int)$i]-1;
-            $temp2 = $temp[$temp15];
-            $tempScore += $temp2->getScore();
-            $tempDiff += Quiz::$quest[$gene[$i]-1]->getDifficulty();
-            $tempDist += Quiz::$quest[$gene[$i]-1]->getDistinguishingDegree();
-            $tempTime += Quiz::$quest[$gene[$i]-1]->getSolutionTime();
+        $tempDiff /= count($gene); #average quiz difficulty value
+        $tempDist /= count($gene); #average quiz distinguishing degree value
 
-        }*/
-
-        $tempDiff /= count($gene);
-        $tempDist /= count($gene);
-
+        #computing normalized relative error (NRE) of the exam
+        #NRE is the difference between expected value and real value
         $NRE = 0;
         $NRE += abs(Quiz::$sumScore - $tempScore)/ Quiz::$sumScore;
         $NRE += abs(Quiz::$avgDiff - $tempDiff)/ Quiz::$avgDiff;
@@ -188,11 +178,6 @@ class Chromosome {
         #print("<br>");
 
         $fitness = 1/(1+$NRE);
-
-
-        #foreach (str_split($gene) as $k => $ch)
-        #    $fitness += abs( ord($ch) - ord(Chromosome::$targetGene{$k}) );
-        
         return $fitness;
     }
 
@@ -202,12 +187,15 @@ class Chromosome {
      */
     public static function genRandom()
     {
-        $quizIds = array_map(function($o) { return $o->getId(); }, Quiz::$quest); #get array of all question id
+        #get array of all question id
+        $quizIds = array_map(function($o) { return $o->getId(); }, Quiz::$question); 
+
+        #randomize the id by shuffling the array and take whatever several questions at the beginning of the array is as a quiz
+        #this step is done like this so that no duplicate questions are in the quiz
         shuffle($quizIds);
         $newgene = array_slice($quizIds, 0, Quiz::$nQuestion);
 
         #var_dump($newgene);
-
         $chromosome = new self($newgene);
         return $chromosome;
     }

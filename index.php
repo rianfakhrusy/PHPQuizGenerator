@@ -29,20 +29,18 @@ require_once('src/Population.php');
 require_once('src/Question.php');
 require_once('src/Quiz.php');
 
+#load question database from an external file
 $filename = "input.txt";
-$exam = new Quiz();
-$exam->load($filename);
+$quiz = new Quiz();
+$quiz->load($filename);
 
-#input
+#quiz constraints input
 Quiz::$nQuestion = 0;
-Quiz::$sumScore = 100;
+Quiz::$sumScore = 100; 
 Quiz::$types = array("multichoice"=>5,"essay"=>5);
-#var_dump(Quiz::$types);
 foreach (Quiz::$types as $key => $value){
 	Quiz::$nQuestion += $value;
 }
-#print(Quiz::$nQuestion);
-#print("<br>");
 Quiz::$avgDiff = 0.5;
 Quiz::$chapters = array(
 	"Induksi"=>1,
@@ -57,15 +55,12 @@ Quiz::$chapters = array(
 Quiz::$avgDist = 0.5;
 Quiz::$sumTime = 120;
 
-
+#genetic algorithm process
 $p = new Population();
-
 for ($x=1; $x<=512; $x++){
     $best = reset($p->population);
     printf("Generation %d: %s<br>", $x, $best->fitness);
 
-    if ($best->fitness == 0) exit("Best match found");
+    if ($best->fitness == 0) exit("Unable to find the best match");
     $p->evolve();
 }
-
-exit("Unable to find the best match");
