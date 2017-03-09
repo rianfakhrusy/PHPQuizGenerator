@@ -12,7 +12,7 @@ class Quiz {
     public static $sumScore;
     public static $types = [];
     public static $avgDiff;
-    public static $chapter = [];
+    public static $chapters = [];
     public static $avgDist;
     public static $sumTime;
     public static $quest = [];

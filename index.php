@@ -44,7 +44,7 @@ foreach (Quiz::$types as $key => $value){
 #print(Quiz::$nQuestion);
 #print("<br>");
 Quiz::$avgDiff = 0.5;
-Quiz::$chapter = array(
+Quiz::$chapters = array(
 	"Induksi"=>1,
 	"Fungsi"=>1,
 	"Kombinatorial"=>2,
@@ -60,7 +60,7 @@ Quiz::$sumTime = 120;
 
 $p = new Population();
 
-for ($x=1; $x<=1024; $x++){
+for ($x=1; $x<=512; $x++){
     $best = reset($p->population);
     printf("Generation %d: %s<br>", $x, $best->fitness);
 

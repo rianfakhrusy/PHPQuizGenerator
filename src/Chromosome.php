@@ -117,7 +117,7 @@ class Chromosome {
         $tempScore = 0;
         $tempTypes = [];
         $tempDiff = 0;
-        $tempChapter = [];
+        $tempChapters = [];
         $tempDist = 0;
         $tempTime = 0;
 
@@ -130,6 +130,22 @@ class Chromosome {
             $tempDiff += Quiz::$quest[$value-1]->getDifficulty();
             $tempDist += Quiz::$quest[$value-1]->getDistinguishingDegree();
             $tempTime += Quiz::$quest[$value-1]->getSolutionTime();
+
+            $s = Quiz::$quest[$value-1]->getType();
+            #print($s);
+            if (array_key_exists($s, $tempTypes)){
+                $tempTypes[$s] += 1;
+            } else {
+                $tempTypes[$s] = 1;
+            }
+
+            $ss = Quiz::$quest[$value-1]->getKnowledgePoint();
+            if (array_key_exists($ss, $tempChapters)){
+                $tempChapters[$ss] += 1;
+            } else {
+                $tempChapters[$ss] = 1;
+            }
+
         }
 /*
         for ($i = 0; $i <= count($gene); $i++)
@@ -152,6 +168,24 @@ class Chromosome {
         $NRE += abs(Quiz::$avgDiff - $tempDiff)/ Quiz::$avgDiff;
         $NRE += abs(Quiz::$avgDist - $tempDist)/ Quiz::$avgDist;
         $NRE += abs(Quiz::$sumTime - $tempTime)/ Quiz::$sumTime;
+
+        foreach(Quiz::$types as $key => $value)
+        {
+            if (!array_key_exists($key, $tempTypes)){
+                $tempTypes[$key] = 0;
+            }
+            $NRE += abs($value - $tempTypes[$key])/ $value;
+        }
+
+        foreach(Quiz::$chapters as $key => $value)
+        {
+            if (!array_key_exists($key, $tempChapters)){
+                $tempChapters[$key] = 0;
+            }
+            $NRE += abs($value - $tempChapters[$key])/ $value;
+        }
+        #print($NRE);
+        #print("<br>");
 
         $fitness = 1/(1+$NRE);
 
